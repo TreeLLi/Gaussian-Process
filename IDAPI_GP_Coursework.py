@@ -34,6 +34,8 @@ def multivariateGaussianDraw(mean, cov):
     # Task 2:
     # TODO: Implement a draw from a multivariate Gaussian here
 
+    print (mean, "\n\n\n", cov)
+    
     # Return drawn sample
     return sample
 
