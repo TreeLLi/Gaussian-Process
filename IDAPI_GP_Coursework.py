@@ -34,6 +34,9 @@ def multivariateGaussianDraw(mean, cov):
     # Task 2:
     # TODO: Implement a draw from a multivariate Gaussian here
 
+    print (mean.shape)
+    print (cov.shape)
+    
     x = np.random.randn(mean.shape[0], 1)
     sample = np.dot(np.linalg.cholesky(cov), x) + mean
     
@@ -210,4 +213,4 @@ if __name__ == '__main__':
     # specific functions with custom input.
     ##########################
 
-    print (multivariateGaussianDraw(np.asarray([0,0]), [[0.5, 0.5], [0.5, 0.5]]))
+    print (multivariateGaussianDraw(np.asarray([0,0]), np.asarray([[0.5, 0.5], [0.5, 0.5]])))
