@@ -232,7 +232,6 @@ class GaussianProcessRegression():
         grad_ln_sigma_f = self.gradTemplate(grad_k_lnsigmaf)
         grad_ln_length_scale = self.gradTemplate(grad_k_lnlength)
         grad_ln_sigma_n = self.gradTemplate(grad_k_lnsigman)
-                
         # Combine gradients
         gradients = np.array([grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
 
@@ -243,9 +242,9 @@ class GaussianProcessRegression():
         template = dot(self.y.T, inv(self.K))
         template = dot(template, grad)
         template = dot(dot(template, inv(self.K)), self.y)
-        template = template / 2.0
+        template /= 2.0
         template -= trace(dot(inv(self.K), grad)) / 2
-        return template * -1
+        return template[0][0] * -1
     
     # ##########################################################################
     # Computes the mean squared error between two input vectors.
@@ -302,3 +301,4 @@ if __name__ == '__main__':
 
     reg.logMarginalLikelihood()
     reg.gradLogMarginalLikelihood()
+    reg.optimize([0,1,2])
