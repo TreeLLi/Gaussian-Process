@@ -95,13 +95,11 @@ class RadialBasisFunction():
         # TODO: Implement the covariance matrix here
 
         print ("X shape: ", X.shape)
-        print (self.getParamsExp())
-        if Xa is None:
-            Xa = X
+        Xa = X if Xa is None else Xa
 
         for p in range(n):
             for q in range(n):
-                covMat[p][q] = self.k(p, q, X, Xa)
+                covMat[p][q] = self.k(X[p], Xa[q])
 
         # If additive Gaussian noise is provided, this adds the sigma2_n along
         # the main diagonal. So the covariance matrix will be for [y y*]. If
@@ -113,18 +111,12 @@ class RadialBasisFunction():
         # Return computed covariance matrix
         return covMat
 
-    def k(self, p, q, X, Xa):
+    def k(self, p, q, xp, xq):
         params = self.getParamsExp()
         sigma2_f = params[0]
         length = params[1]
 
-        return sigma2_f * exp(-(norm(X[p]-Xa[q])**2) / (2*length**2))
-
-    def noise(self, p, q):
-        params = self.getParamsExp()
-        sigma2_n = params[2]
-
-        return sigma2_n if p==q else 0
+        return sigma2_f * exp(-(norm(xp-xq)**2) / (2*length**2))
 
 class GaussianProcessRegression():
     def __init__(self, X, y, k):
@@ -133,6 +125,11 @@ class GaussianProcessRegression():
         self.y = y
         self.k = k
         self.K = self.KMat(self.X)
+
+        print ("GPR X: ", X.shape)
+        print ("GPR y: ", y.shape)
+        print ("GPR k: ", k.shape)
+        print ("GPR K: ", K.shape)
 
     # ##########################################################################
     # Recomputes the covariance matrix and the inverse covariance
@@ -235,9 +232,13 @@ if __name__ == '__main__':
     # specific functions with custom input.
     ##########################
 
-    print (multivariateGaussianDraw(np.asarray([0,0]), np.asarray([[0.5, 0.5], [0.5, 0.5]])))
+    # print (multivariateGaussianDraw(np.asarray([0,0]), np.asarray([[0.5, 0.5], [0.5, 0.5]])))
 
-    # 2nd Question
-    rbf = RadialBasisFunction([0, 1, 2])
-    A = np.asarray([[1,2], [2,3]])
-    print (rbf.covMatrix(A))
+    # # 2nd Question
+    # rbf = RadialBasisFunction([0, 1, 2])
+    # A = np.asarray([[1,2], [2,3]])
+    # print (rbf.covMatrix(A))
+
+    # X = np.asarray([[1,2], [2,3]])
+    # y = np.asarray([1, 2])
+    # reg = GaussianProcessRegression(
