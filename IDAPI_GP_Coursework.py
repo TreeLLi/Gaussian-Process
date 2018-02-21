@@ -268,7 +268,7 @@ class GaussianProcessRegression():
 
         n = ya.shape[0]
         for i in range(n):
-            sigma2_xa = cov[i][i]
+            sigma2_xa = cov[i][i] + self.k.getParamsExp()[2]
             msll += log(2*pi*sigma2_xa) / 2.0
             msll += (ya[i]-fbar[i])**2 / (2.0*sigma2_xa)
 
