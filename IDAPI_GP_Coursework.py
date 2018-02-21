@@ -167,7 +167,7 @@ class GaussianProcessRegression():
         # exclude the noise
         if self.k.sigma2_n is not None:
             noise = self.k.sigma2_n*np.identity(self.X.shape[0])
-            cov_train = self.K - noise
+            cov_train = self.K + noise
 
         ker_test = self.kerMatrix(Xa, self.X)
         mean_fa = dot(dot(ker_test, inv(cov_train)), self.y)
