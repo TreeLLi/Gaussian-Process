@@ -2,9 +2,11 @@ import numpy as np
 from scipy.optimize import minimize
 
 from numpy import exp
+from numpy import dot
 
 from numpy.linalg import cholesky
 from numpy.linalg import norm
+from numpy.linalg import inv
 
 # ##############################################################################
 # LoadData takes the file location for the yacht_hydrodynamics.data and returns
@@ -84,6 +86,7 @@ class RadialBasisFunction():
     def covMatrix(self, X, Xa=None):
         if Xa is not None:
             X_aug = np.zeros((X.shape[0]+Xa.shape[0], X.shape[1]))
+            # append the vector Xa to the end of X
             X_aug[:X.shape[0], :X.shape[1]] = X
             X_aug[X.shape[0]:, :X.shape[1]] = Xa
             X=X_aug
@@ -95,11 +98,10 @@ class RadialBasisFunction():
         # TODO: Implement the covariance matrix here
 
         print ("X shape: ", X.shape)
-        Xa = X if Xa is None else Xa
 
         for p in range(n):
             for q in range(n):
-                covMat[p][q] = self.k(X[p], Xa[q])
+                covMat[p][q] = self.k(X[p], X[q])
 
         # If additive Gaussian noise is provided, this adds the sigma2_n along
         # the main diagonal. So the covariance matrix will be for [y y*]. If
@@ -111,6 +113,13 @@ class RadialBasisFunction():
         # Return computed covariance matrix
         return covMat
 
+    def kerMatrix(self, X, Xa):
+        kerMat = np.zeros((X.shape[0], Xa.shape[0]))
+        for p in range(X.shape[0]):
+            for q in range(Xa.shape[0]):
+                kerMat[p][q] = self.k(X[p], Xa[q])
+        return kerMat
+    
     def k(self, xp, xq):
         params = self.getParamsExp()
         sigma2_f = params[0]
@@ -154,6 +163,14 @@ class GaussianProcessRegression():
         # TODO: compute the mean and covariance of the prediction
 
         print ("Xa shape: ", Xa.shape)
+
+        # exclude the noise
+        if self.k.sigma2_n is not None:
+            noise = self.k.sigma2_n*np.identity(self.X.shape[0])
+            cov_train = self.K - noise
+
+        ker_test = self.k.kerMatrix(Xa, self.X)
+        mean_fa = dot(dot(ker_test, inv(cov_train)), self.y)
 
         # Return the mean and covariance
         return mean_fa, cov_fa
