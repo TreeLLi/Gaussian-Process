@@ -101,8 +101,6 @@ class RadialBasisFunction():
         # Task 1:
         # TODO: Implement the covariance matrix here
 
-        print ("X shape: ", X.shape)
-
         for p in range(n):
             for q in range(n):
                 covMat[p][q] = self.k(X[p], X[q])
@@ -159,8 +157,6 @@ class GaussianProcessRegression():
         # Task 3:
         # TODO: compute the mean and covariance of the prediction
 
-        print ("Xa shape: ", Xa.shape)
-
         ker_test = self.kerMatrix(Xa, self.X)
         mean_fa = dot(dot(ker_test, inv(self.K)), self.y)
 
@@ -193,8 +189,8 @@ class GaussianProcessRegression():
         # Task 4:
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
 
-        mll = dot(dot(self.y.T, inv(self.K)), self.y) / 2
-        mll += log(det(self.K))/2 + self.y.shape[0]*log(2*pi)/2
+        mll = dot(dot(self.y.T, inv(self.K)), self.y) / 2.0
+        mll += log(det(self.K))/2.0 + self.y.shape[0]*log(2*pi)/2.0
         
         # Return mll
         return mll
@@ -250,10 +246,13 @@ class GaussianProcessRegression():
     # Computes the mean squared error between two input vectors.
     # ##########################################################################
     def mse(self, ya, fbar):
-        mse = 0
+        mse = 0.0
         # Task 7:
         # TODO: Implement the MSE between ya and fbar
 
+        diff = ya - fbar
+        mse = np.sum(diff) / float(ya.shape[0])
+        
         # Return mse
         return mse
 
@@ -265,6 +264,8 @@ class GaussianProcessRegression():
         # Task 7:
         # TODO: Implement MSLL of the prediction fbar, cov given the target ya
 
+        print ("msll ya: ", ya, "\nfbar: ", fbar, "\ncov: ", cov)
+        
         return msll
 
     # ##########################################################################
@@ -297,8 +298,9 @@ if __name__ == '__main__':
     Xt = np.asarray([[4, 5], [6, 7]])
     reg = GaussianProcessRegression(X, y, rbf)
     mean_fa, cov_fa = reg.predict(Xt)
-    print (mean_fa, "\n \n", cov_fa)
 
     reg.logMarginalLikelihood()
     reg.gradLogMarginalLikelihood()
-    reg.optimize([0,1,2])
+    reg.optimize(np.asarray([1,0.1,0.5]))
+
+    print("mse: ", reg.mse(np.asarray([[0],[4]]), y))
