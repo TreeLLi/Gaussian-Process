@@ -118,7 +118,7 @@ class RadialBasisFunction():
         sigma2_f = params[0]
         length = params[1]
 
-        return sigma2_f * exp(-(norm(X[p]-Xa[q])**2) / (2*length**2)) if length!=0 else 0
+        return sigma2_f * exp(-(norm(X[p]-Xa[q])**2) / (2*length**2))
 
     def noise(self, p, q):
         params = self.getParamsExp()
