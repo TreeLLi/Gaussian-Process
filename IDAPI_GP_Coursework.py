@@ -243,6 +243,7 @@ class GaussianProcessRegression():
         template = dot(self.y.T, inv(self.K))
         template = dot(template, grad)
         template = dot(dot(template, inv(self.K)), self.y)
+        template = template / 2.0
         template -= trace(dot(inv(self.K), grad)) / 2
         return template * -1
     
