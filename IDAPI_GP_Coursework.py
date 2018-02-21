@@ -244,7 +244,7 @@ class GaussianProcessRegression():
         template = dot(template, grad)
         template = dot(dot(template, inv(self.K)), self.y)
         template -= trace(dot(inv(self.K), grad)) / 2
-        return template
+        return template * -1
     
     # ##########################################################################
     # Computes the mean squared error between two input vectors.
