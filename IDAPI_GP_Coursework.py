@@ -114,18 +114,17 @@ class RadialBasisFunction():
         return covMat
 
     def k(self, p, q, X, Xa):
-        params = self.getParams()
-        sigma_f = params[0]
+        params = self.getParamsExp()
+        sigma2_f = params[0]
         length = params[1]
-        sigma_n = params[2]
 
-        return sigma_n**2 * exp(-(norm(X[p]-Xa[q])**2) / (2*length**2)) if length!=0 else 0
+        return sigma2_f * exp(-(norm(X[p]-Xa[q])**2) / (2*length**2)) if length!=0 else 0
 
     def noise(self, p, q):
-        params = self.getParams()
-        sigma_n = params[2]
+        params = self.getParamsExp()
+        sigma2_n = params[2]
 
-        return sigma_n**2 if p==q else 0
+        return sigma2_n if p==q else 0
 
 class GaussianProcessRegression():
     def __init__(self, X, y, k):
