@@ -84,18 +84,15 @@ class RadialBasisFunction():
     # training and test set.
     # ##########################################################################
     def covMatrix(self, X, Xa=None):
-        # if Xa is not None:
-        #     X_aug = np.zeros((X.shape[0]+Xa.shape[0], X.shape[1]))
-        #     # append the vector Xa to the end of X
-        #     X_aug[:X.shape[0], :X.shape[1]] = X
-        #     X_aug[X.shape[0]:, :X.shape[1]] = Xa
-        #     X=X_aug
+        if Xa is not None:
+            X_aug = np.zeros((X.shape[0]+Xa.shape[0], X.shape[1]))
+            # append the vector Xa to the end of X
+            X_aug[:X.shape[0], :X.shape[1]] = X
+            X_aug[X.shape[0]:, :X.shape[1]] = Xa
+            X=X_aug
 
         n = X.shape[0]
-        # covMat = np.zeros((n, n))
-        m = Xa.shape[0] if Xa is not None else n
-        Xa = X if Xa is None else Xa
-        covMat = np.zeros((n,m))
+        covMat = np.zeros((n, n))
 
         # Task 1:
         # TODO: Implement the covariance matrix here
@@ -103,8 +100,8 @@ class RadialBasisFunction():
         print ("X shape: ", X.shape)
 
         for p in range(n):
-            for q in range(m):
-                covMat[p][q] = self.k(X[p], Xa[q])
+            for q in range(n):
+                covMat[p][q] = self.k(X[p], X[q])
 
         # If additive Gaussian noise is provided, this adds the sigma2_n along
         # the main diagonal. So the covariance matrix will be for [y y*]. If
@@ -172,7 +169,7 @@ class GaussianProcessRegression():
             noise = self.k.sigma2_n*np.identity(self.X.shape[0])
             cov_train = self.K - noise
 
-        ker_test = self.k.covMatrix(Xa, self.X)
+        ker_test = self.kerMatrix(Xa, self.X)
         mean_fa = dot(dot(ker_test, inv(cov_train)), self.y)
 
         print (self.K)
@@ -180,6 +177,18 @@ class GaussianProcessRegression():
         # Return the mean and covariance
         return mean_fa, cov_fa
 
+    def kerMatrix(self, X, Xa):
+        params = self.k.getParamsExp()
+        sigma2_f = params[0]
+        length = params[1]
+
+        kerMat = np.zeros((X.shape[0], Xa.shape[0]))
+        for p in range(X.shape[0]):
+            for q in range(Xa.shape[0]):
+                kerMat[p][q] = sigma2_f * exp(-(norm(X[p]-Xa[q])**2) / (2*length**2))
+                
+        return kerMat
+    
     # ##########################################################################
     # Return negative log marginal likelihood of training set. Needs to be
     # negative since the optimiser only minimises.
