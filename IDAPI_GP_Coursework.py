@@ -250,7 +250,7 @@ class GaussianProcessRegression():
         # Task 7:
         # TODO: Implement the MSE between ya and fbar
 
-        diff = ya - fbar
+        diff = (ya - fbar)**2
         mse = np.sum(diff) / float(ya.shape[0])
         
         # Return mse
@@ -264,7 +264,7 @@ class GaussianProcessRegression():
         # Task 7:
         # TODO: Implement MSLL of the prediction fbar, cov given the target ya
 
-        print ("msll ya: ", ya, "\nfbar: ", fbar, "\ncov: ", cov)
+        print ("msll ya: ", ya.shape, "\n fbar: ", fbar.shape, "\n cov: ", cov.shape)
         
         return msll
 
