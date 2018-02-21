@@ -5,6 +5,7 @@ from numpy import exp
 from numpy import dot
 from numpy import log
 from numpy import pi
+from numpy import trace
 
 from numpy.linalg import cholesky
 from numpy.linalg import norm
@@ -115,13 +116,6 @@ class RadialBasisFunction():
 
         # Return computed covariance matrix
         return covMat
-
-    def kerMatrix(self, X, Xa):
-        kerMat = np.zeros((X.shape[0], Xa.shape[0]))
-        for p in range(X.shape[0]):
-            for q in range(Xa.shape[0]):
-                kerMat[p][q] = self.k(X[p], Xa[q])
-        return kerMat
     
     def k(self, xp, xq):
         params = self.getParamsExp()
@@ -218,13 +212,39 @@ class GaussianProcessRegression():
         # TODO: calculate the gradients of the negative log marginal likelihood
         # wrt. the hyperparameters
 
+        params = self.k.getParams()
+        ln_sigma_f = params[0]
+        ln_length = params[1]
+        ln_sigma_n = params[2]
 
+        grad_k_lnsigmaf = np.zeros_like(self.K)
+        grad_k_lnlength = np.zeros_like(self.K)
+        grad_k_lnsigman = np.zeros_like(self.K)
+        n = self.X.shape[0]
+        for p in range(n):
+            for q in range(n):
+                temp = exp(2*ln_sigma_f - norm(X[p]-X[q])**2/(2*exp(2*ln_length)))
+                grad_k_lnsigmaf[p][q] = 2 * temp
+                grad_k_lnlength[p][q] = temp * norm(X[p]-X[q])**2 * exp(-2*ln_length)
+                grad_k_lnsigman[p][q] = 2 * exp(2*ln_sigma_n) if p==q else 0.0
+
+        grad_ln_sigma_f = self.gradTemplate(grad_k_lnsigmaf)
+        grad_ln_length_scale = self.gradTemplate(grad_k_lnlength)
+        grad_ln_sigma_n = self.gradTemplate(grad_k_lnsigman)
+                
         # Combine gradients
         gradients = np.array([grad_ln_sigma_f, grad_ln_length_scale, grad_ln_sigma_n])
 
         # Return the gradients
         return gradients
 
+    def gradTemplate(self, grad):
+        template = dot(y.T, inv(self.K))
+        template = dot(template, grad)
+        template = dot(dot(template, inv(self.K)), y)
+        template -= trace(dot(inv(self.K), grad)) / 2
+        return template
+    
     # ##########################################################################
     # Computes the mean squared error between two input vectors.
     # ##########################################################################
@@ -279,3 +299,4 @@ if __name__ == '__main__':
     print (mean_fa, "\n \n", cov_fa)
 
     reg.logMarginalLikelihood()
+    reg.gradLogMarginalLikelihood()
