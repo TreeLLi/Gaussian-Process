@@ -34,12 +34,8 @@ def multivariateGaussianDraw(mean, cov):
     # Task 2:
     # TODO: Implement a draw from a multivariate Gaussian here
 
-    print (mean.shape)
-    print (cov.shape)
-    
     x = np.random.randn(mean.shape[0])
-    sample = np.dot(np.linalg.cholesky(cov), x)
-    sample = sample + mean
+    sample = np.dot(np.linalg.cholesky(cov), x) + mean
     
     # Return drawn sample
     return sample
@@ -94,6 +90,9 @@ class RadialBasisFunction():
         # Task 1:
         # TODO: Implement the covariance matrix here
 
+        print ("X shape: ", X.shape)
+        if Xa is not None:
+            print ("Xa shape: ", Xa.shape)
 
 
         # If additive Gaussian noise is provided, this adds the sigma2_n along
@@ -136,6 +135,8 @@ class GaussianProcessRegression():
         cov_fa = np.zeros((Xa.shape[0], Xa.shape[0]))
         # Task 3:
         # TODO: compute the mean and covariance of the prediction
+
+        print ("Xa shape: ", Xa.shape)
 
         # Return the mean and covariance
         return mean_fa, cov_fa
