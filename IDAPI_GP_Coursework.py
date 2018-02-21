@@ -221,6 +221,7 @@ class GaussianProcessRegression():
         grad_k_lnlength = np.zeros_like(self.K)
         grad_k_lnsigman = np.zeros_like(self.K)
         n = self.X.shape[0]
+        X = self.X
         for p in range(n):
             for q in range(n):
                 temp = exp(2*ln_sigma_f - norm(X[p]-X[q])**2/(2*exp(2*ln_length)))
@@ -239,9 +240,9 @@ class GaussianProcessRegression():
         return gradients
 
     def gradTemplate(self, grad):
-        template = dot(y.T, inv(self.K))
+        template = dot(self.y.T, inv(self.K))
         template = dot(template, grad)
-        template = dot(dot(template, inv(self.K)), y)
+        template = dot(dot(template, inv(self.K)), self.y)
         template -= trace(dot(inv(self.K), grad)) / 2
         return template
     
