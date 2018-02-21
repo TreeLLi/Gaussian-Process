@@ -1,6 +1,10 @@
 import numpy as np
 from scipy.optimize import minimize
 
+from numpy import exp
+
+from numpy.linalg import cholesky
+from numpy.linalg import norm
 
 # ##############################################################################
 # LoadData takes the file location for the yacht_hydrodynamics.data and returns
@@ -35,7 +39,7 @@ def multivariateGaussianDraw(mean, cov):
     # TODO: Implement a draw from a multivariate Gaussian here
 
     x = np.random.randn(mean.shape[0])
-    sample = np.dot(np.linalg.cholesky(cov), x) + mean
+    sample = np.dot(cholesky(cov), x) + mean
     
     # Return drawn sample
     return sample
@@ -91,9 +95,12 @@ class RadialBasisFunction():
         # TODO: Implement the covariance matrix here
 
         print ("X shape: ", X.shape)
-        if Xa is not None:
-            print ("Xa shape: ", Xa.shape)
+        if Xa is None:
+            Xa = X
 
+        for p in range(n):
+            for q in range(n):
+                covMat[p][q] = self.k(p, q, X, Xa) + self.noise(p, q)
 
         # If additive Gaussian noise is provided, this adds the sigma2_n along
         # the main diagonal. So the covariance matrix will be for [y y*]. If
@@ -105,6 +112,22 @@ class RadialBasisFunction():
         # Return computed covariance matrix
         return covMat
 
+    def k(self, p, q, X, Xa):
+        params = self.getParams()
+        sigma_f = params[0]
+        length = params[1]
+        sigma_n = params[2]
+
+        return sigma_n**2 * exp(-norm(X[p]-Xa[q])**2 / (2*length**2))
+
+    def noise(self, p, q):
+        params = self.getParams()
+        sigma_n = params[2]
+
+        if p == q:
+            return sigma_n**2
+        else:
+            return 0
 
 class GaussianProcessRegression():
     def __init__(self, X, y, k):
@@ -216,3 +239,8 @@ if __name__ == '__main__':
     ##########################
 
     print (multivariateGaussianDraw(np.asarray([0,0]), np.asarray([[0.5, 0.5], [0.5, 0.5]])))
+
+    # 2nd Question
+    rbf = RadialBasisFunction([0, 1, 2])
+    A = np.asarray([[1,2], [2,3]])
+    rbf.covMatrix(A)
