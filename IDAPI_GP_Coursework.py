@@ -84,15 +84,18 @@ class RadialBasisFunction():
     # training and test set.
     # ##########################################################################
     def covMatrix(self, X, Xa=None):
-        if Xa is not None:
-            X_aug = np.zeros((X.shape[0]+Xa.shape[0], X.shape[1]))
-            # append the vector Xa to the end of X
-            X_aug[:X.shape[0], :X.shape[1]] = X
-            X_aug[X.shape[0]:, :X.shape[1]] = Xa
-            X=X_aug
+        # if Xa is not None:
+        #     X_aug = np.zeros((X.shape[0]+Xa.shape[0], X.shape[1]))
+        #     # append the vector Xa to the end of X
+        #     X_aug[:X.shape[0], :X.shape[1]] = X
+        #     X_aug[X.shape[0]:, :X.shape[1]] = Xa
+        #     X=X_aug
 
         n = X.shape[0]
-        covMat = np.zeros((n,n))
+        # covMat = np.zeros((n, n))
+        m = Xa.shape[0] if Xa is not None else n
+        Xa = X if Xa is None else Xa
+        covMat = np.zeros((n,m))
 
         # Task 1:
         # TODO: Implement the covariance matrix here
@@ -100,8 +103,8 @@ class RadialBasisFunction():
         print ("X shape: ", X.shape)
 
         for p in range(n):
-            for q in range(n):
-                covMat[p][q] = self.k(X[p], X[q])
+            for q in range(m):
+                covMat[p][q] = self.k(X[p], Xa[q])
 
         # If additive Gaussian noise is provided, this adds the sigma2_n along
         # the main diagonal. So the covariance matrix will be for [y y*]. If
@@ -255,12 +258,12 @@ if __name__ == '__main__':
 
     # 2nd Question
     rbf = RadialBasisFunction([0, 1, 2])
-    # A = np.asarray([[1,2], [2,3]])
-    # print (rbf.covMatrix(A))
+    A = np.asarray([[1,2], [2,3]])
+    print (rbf.covMatrix(A))
 
-    # X = np.asarray([[1,2], [2,3]])
-    # y = np.asarray([[1], [2]])
-    # Xt = np.asarray([[4, 5], [6, 7]])
-    # reg = GaussianProcessRegression(X, y, rbf)
-    # mean_fa, cov_fa = reg.predict(Xt)
-    # print (mean_fa, "\n \n", cov_fa)
+    X = np.asarray([[1,2], [2,3]])
+    y = np.asarray([[1], [2]])
+    Xt = np.asarray([[4, 5], [6, 7]])
+    reg = GaussianProcessRegression(X, y, rbf)
+    mean_fa, cov_fa = reg.predict(Xt)
+    print (mean_fa, "\n \n", cov_fa)
