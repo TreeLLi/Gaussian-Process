@@ -119,16 +119,13 @@ class RadialBasisFunction():
         length = params[1]
         sigma_n = params[2]
 
-        return sigma_n**2 * exp(-norm(X[p]-Xa[q])**2 / (2*length**2))
+        return sigma_n**2 * exp(-(norm(X[p]-Xa[q])**2) / (2*length**2)) if length!=0 else 0
 
     def noise(self, p, q):
         params = self.getParams()
         sigma_n = params[2]
 
-        if p == q:
-            return sigma_n**2
-        else:
-            return 0
+        return sigma_n**2 if p==q else 0
 
 class GaussianProcessRegression():
     def __init__(self, X, y, k):
@@ -244,4 +241,4 @@ if __name__ == '__main__':
     # 2nd Question
     rbf = RadialBasisFunction([0, 1, 2])
     A = np.asarray([[1,2], [2,3]])
-    rbf.covMatrix(A)
+    print (rbf.covMatrix(A))
