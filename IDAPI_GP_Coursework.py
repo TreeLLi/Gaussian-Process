@@ -97,18 +97,18 @@ class RadialBasisFunction():
         # Task 1:
         # TODO: Implement the covariance matrix here
 
-        # print ("X shape: ", X.shape)
+        print ("X shape: ", X.shape)
 
-        # for p in range(n):
-        #     for q in range(n):
-        #         covMat[p][q] = self.k(X[p], X[q])
+        for p in range(n):
+            for q in range(n):
+                covMat[p][q] = self.k(X[p], X[q])
 
-        # # If additive Gaussian noise is provided, this adds the sigma2_n along
-        # # the main diagonal. So the covariance matrix will be for [y y*]. If
-        # # you want [y f*], simply subtract the noise from the lower right
-        # # quadrant.
-        # if self.sigma2_n is not None:
-        #     covMat += self.sigma2_n*np.identity(n)
+        # If additive Gaussian noise is provided, this adds the sigma2_n along
+        # the main diagonal. So the covariance matrix will be for [y y*]. If
+        # you want [y f*], simply subtract the noise from the lower right
+        # quadrant.
+        if self.sigma2_n is not None:
+            covMat += self.sigma2_n*np.identity(n)
 
         # Return computed covariance matrix
         return covMat
@@ -162,15 +162,15 @@ class GaussianProcessRegression():
         # Task 3:
         # TODO: compute the mean and covariance of the prediction
 
-        # print ("Xa shape: ", Xa.shape)
+        print ("Xa shape: ", Xa.shape)
 
-        # # exclude the noise
-        # if self.k.sigma2_n is not None:
-        #     noise = self.k.sigma2_n*np.identity(self.X.shape[0])
-        #     cov_train = self.K - noise
+        # exclude the noise
+        if self.k.sigma2_n is not None:
+            noise = self.k.sigma2_n*np.identity(self.X.shape[0])
+            cov_train = self.K - noise
 
-        # ker_test = self.k.kerMatrix(Xa, self.X)
-        # mean_fa = dot(dot(ker_test, inv(cov_train)), self.y)
+        ker_test = self.k.covMatrix(Xa, self.X)
+        mean_fa = dot(dot(ker_test, inv(cov_train)), self.y)
 
         print (self.K)
         
@@ -258,9 +258,9 @@ if __name__ == '__main__':
     # A = np.asarray([[1,2], [2,3]])
     # print (rbf.covMatrix(A))
 
-    X = np.asarray([[1,2], [2,3]])
-    y = np.asarray([[1], [2]])
-    Xt = np.asarray([[4, 5], [6, 7]])
-    reg = GaussianProcessRegression(X, y, rbf)
-    mean_fa, cov_fa = reg.predict(Xt)
-    print (mean_fa, "\n \n", cov_fa)
+    # X = np.asarray([[1,2], [2,3]])
+    # y = np.asarray([[1], [2]])
+    # Xt = np.asarray([[4, 5], [6, 7]])
+    # reg = GaussianProcessRegression(X, y, rbf)
+    # mean_fa, cov_fa = reg.predict(Xt)
+    # print (mean_fa, "\n \n", cov_fa)
