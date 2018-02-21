@@ -3,10 +3,13 @@ from scipy.optimize import minimize
 
 from numpy import exp
 from numpy import dot
+from numpy import log
+from numpy import pi
 
 from numpy.linalg import cholesky
 from numpy.linalg import norm
 from numpy.linalg import inv
+from numpy.linalg import det
 
 # ##############################################################################
 # LoadData takes the file location for the yacht_hydrodynamics.data and returns
@@ -196,6 +199,9 @@ class GaussianProcessRegression():
         # Task 4:
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
 
+        mll = dot(dot(self.y.T, inv(self.K)), self.y) / 2
+        mll += log(det(self.K))/2 + self.y.shape[0]*log(2*pi)/2
+        
         # Return mll
         return mll
 
@@ -271,3 +277,5 @@ if __name__ == '__main__':
     reg = GaussianProcessRegression(X, y, rbf)
     mean_fa, cov_fa = reg.predict(Xt)
     print (mean_fa, "\n \n", cov_fa)
+
+    reg.logMarginalLikelihood()
