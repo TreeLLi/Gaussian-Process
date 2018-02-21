@@ -111,7 +111,7 @@ class RadialBasisFunction():
         # Return computed covariance matrix
         return covMat
 
-    def k(self, p, q, xp, xq):
+    def k(self, xp, xq):
         params = self.getParamsExp()
         sigma2_f = params[0]
         length = params[1]
@@ -128,8 +128,8 @@ class GaussianProcessRegression():
 
         print ("GPR X: ", X.shape)
         print ("GPR y: ", y.shape)
-        print ("GPR k: ", k.shape)
-        print ("GPR K: ", K.shape)
+        print ("GPR k: ", k.getParamsExp())
+        print ("GPR K: ", K.getParamsExp())
 
     # ##########################################################################
     # Recomputes the covariance matrix and the inverse covariance
