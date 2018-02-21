@@ -129,7 +129,7 @@ class GaussianProcessRegression():
         print ("GPR X: ", X.shape)
         print ("GPR y: ", y.shape)
         print ("GPR k: ", k.getParamsExp())
-        print ("GPR K: ", K.getParamsExp())
+        print ("GPR K: ", self.K.shape)
 
     # ##########################################################################
     # Recomputes the covariance matrix and the inverse covariance
@@ -234,11 +234,14 @@ if __name__ == '__main__':
 
     # print (multivariateGaussianDraw(np.asarray([0,0]), np.asarray([[0.5, 0.5], [0.5, 0.5]])))
 
-    # # 2nd Question
-    # rbf = RadialBasisFunction([0, 1, 2])
+    # 2nd Question
+    rbf = RadialBasisFunction([0, 1, 2])
     # A = np.asarray([[1,2], [2,3]])
     # print (rbf.covMatrix(A))
 
-    # X = np.asarray([[1,2], [2,3]])
-    # y = np.asarray([1, 2])
-    # reg = GaussianProcessRegression(
+    X = np.asarray([[1,2], [2,3]])
+    y = np.asarray([[1], [2]])
+    Xt = np.asarray([[4, 5], [6, 7]])
+    reg = GaussianProcessRegression(X, y, rbf)
+    mean_fa, cov_fa = reg.predict(Xt)
+    print (mean_fa, "\n \n", cov_fa)
