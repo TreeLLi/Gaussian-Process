@@ -164,15 +164,11 @@ class GaussianProcessRegression():
 
         print ("Xa shape: ", Xa.shape)
 
-        # exclude the noise
-        if self.k.sigma2_n is not None:
-            noise = self.k.sigma2_n*np.identity(self.X.shape[0])
-            cov_train = self.K
-
         ker_test = self.kerMatrix(Xa, self.X)
-        mean_fa = dot(dot(ker_test, inv(cov_train)), self.y)
-        print (self.kerMatrix(self.X, self.X) - self.K)
+        mean_fa = dot(dot(ker_test, inv(self.K)), self.y)
 
+        cov_fa = self.kerMatrix(Xa, Xa)
+        cov_fa -= dot(dot(ker_test, inv(self.K)), self.kerMatrix(self.X, Xa))
         # Return the mean and covariance
         return mean_fa, cov_fa
 
