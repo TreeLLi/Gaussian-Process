@@ -95,7 +95,7 @@ class RadialBasisFunction():
         # TODO: Implement the covariance matrix here
 
         print ("X shape: ", X.shape)
-        print (self.getParams())
+        print (self.getParamsExp())
         if Xa is None:
             Xa = X
 
