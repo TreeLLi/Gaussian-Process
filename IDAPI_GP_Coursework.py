@@ -265,8 +265,15 @@ class GaussianProcessRegression():
         # TODO: Implement MSLL of the prediction fbar, cov given the target ya
 
         print ("msll ya: ", ya.shape, "\n fbar: ", fbar.shape, "\n cov: ", cov.shape)
-        
-        return msll
+
+        n = ya.shape[0]
+        for i in range(n):
+            sigma2_xa = cov[i][i]
+            msll += log(2*pi*sigma2_xa) / 2.0
+            msll += (ya[i]-fbar[i])**2 / (2.0*sigma2_xa)
+
+        msll /= n
+        return msll[0]
 
     # ##########################################################################
     # Minimises the negative log marginal likelihood on the training set to find
@@ -304,3 +311,4 @@ if __name__ == '__main__':
     reg.optimize(np.asarray([1,0.1,0.5]))
 
     print("mse: ", reg.mse(np.asarray([[0],[4]]), y))
+    print("msll: ", reg.msll(np.asarray([[0],[4]]), y, Xt))
