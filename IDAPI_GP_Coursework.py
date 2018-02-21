@@ -101,7 +101,7 @@ class RadialBasisFunction():
 
         for p in range(n):
             for q in range(n):
-                covMat[p][q] = self.k(p, q, X, Xa) + self.noise(p, q)
+                covMat[p][q] = self.k(p, q, X, Xa)
 
         # If additive Gaussian noise is provided, this adds the sigma2_n along
         # the main diagonal. So the covariance matrix will be for [y y*]. If
