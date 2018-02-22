@@ -189,8 +189,14 @@ class GaussianProcessRegression():
         # Task 4:
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
 
+        L = cholesky(self.K)
+        log_K_det = 0.0
+        # log_K_det = 2*sum(log(dot(L, np.identity(self.K.shape[0]))))
+        for i in range(L.shape[0]):
+            log_K_det += log(L[i][i])
+        log_K_det *= 2
         mll = dot(dot(self.y.T, inv(self.K)), self.y) / 2.0
-        mll += log(det(self.K))/2.0 + self.y.shape[0]*log(2*pi)/2.0
+        mll += log_K_det/2.0 + self.y.shape[0]*log(2*pi)/2.0
         
         # Return mll
         return mll
