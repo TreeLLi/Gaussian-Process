@@ -294,19 +294,19 @@ if __name__ == '__main__':
     # print (multivariateGaussianDraw(np.asarray([0,0]), np.asarray([[0.5, 0.5], [0.5, 0.5]])))
 
     # 2nd Question
-    rbf = RadialBasisFunction([0, 1, 2])
-    A = np.asarray([[1,2], [2,3]])
-    print (rbf.covMatrix(A))
+    # rbf = RadialBasisFunction([0, 1, 2])
+    # A = np.asarray([[1,2], [2,3]])
+    # print (rbf.covMatrix(A))
 
-    X = np.asarray([[1,2], [2,3]])
-    y = np.asarray([[1], [2]])
-    Xt = np.asarray([[4, 5], [6, 7]])
-    reg = GaussianProcessRegression(X, y, rbf)
-    mean_fa, cov_fa = reg.predict(Xt)
+    # X = np.asarray([[1,2], [2,3]])
+    # y = np.asarray([[1], [2]])
+    # Xt = np.asarray([[4, 5], [6, 7]])
+    # reg = GaussianProcessRegression(X, y, rbf)
+    # mean_fa, cov_fa = reg.predict(Xt)
 
-    reg.logMarginalLikelihood()
-    reg.gradLogMarginalLikelihood()
-    reg.optimize(np.asarray([1,0.1,0.5]))
+    # reg.logMarginalLikelihood()
+    # reg.gradLogMarginalLikelihood()
+    # reg.optimize(np.asarray([1,0.1,0.5]))
 
-    print("mse: ", reg.mse(np.asarray([[0],[4]]), y))
-    print("msll: ", reg.msll(np.asarray([[0],[4]]), y, Xt))
+    # print("mse: ", reg.mse(np.asarray([[0],[4]]), y))
+    # print("msll: ", reg.msll(np.asarray([[0],[4]]), y, Xt))
