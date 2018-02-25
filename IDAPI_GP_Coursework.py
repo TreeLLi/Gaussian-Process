@@ -130,11 +130,6 @@ class GaussianProcessRegression():
         self.k = k
         self.K = self.KMat(self.X)
 
-        print ("GPR X: ", X.shape)
-        print ("GPR y: ", y.shape)
-        print ("GPR k: ", k.getParamsExp())
-        print ("GPR K: ", self.K.shape)
-
     # ##########################################################################
     # Recomputes the covariance matrix and the inverse covariance
     # matrix when new hyperparameters are provided.
@@ -189,9 +184,9 @@ class GaussianProcessRegression():
         # Task 4:
         # TODO: Calculate the log marginal likelihood ( mll ) of self.y
 
+        # use the trick to improve the numeric statbility
         L = cholesky(self.K)
         log_K_det = 0.0
-        # log_K_det = 2*sum(log(dot(L, np.identity(self.K.shape[0]))))
         for i in range(L.shape[0]):
             log_K_det += log(L[i][i])
         mll = dot(dot(self.y.T, inv(self.K)), self.y) / 2.0
@@ -268,8 +263,6 @@ class GaussianProcessRegression():
         msll = 0
         # Task 7:
         # TODO: Implement MSLL of the prediction fbar, cov given the target ya
-
-        print ("msll ya: ", ya.shape, "\n fbar: ", fbar.shape, "\n cov: ", cov.shape)
 
         n = ya.shape[0]
         for i in range(n):
